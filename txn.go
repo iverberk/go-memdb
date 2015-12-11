@@ -338,7 +338,7 @@ func (txn *Txn) SearchByPrefix(table, index string, args ...interface{}) ([]inte
 
 	// Handle non-unique index by using an iterator and getting the first value
 	iter := indexTxn.Root().Iterator()
-	iter.SearchByPrefix(val, true)
+	iter.SearchByPrefix(val, false)
 
 	var objs []interface{}
 	for {
