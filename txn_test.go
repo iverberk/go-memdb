@@ -151,12 +151,12 @@ func TestTxn_InsertUpdate_First_NonUnique(t *testing.T) {
 	}
 }
 
-func TestTxn_SearchByPrefix(t *testing.T) {
+func TestTxn_Find(t *testing.T) {
 	db := testDB(t)
 	txn := db.Txn(true)
 
 	obj := &TestObject{
-		ID:  "my-object",
+		ID:  "my-first-object",
 		Foo: "foo",
 	}
 	obj2 := &TestObject{
@@ -164,7 +164,11 @@ func TestTxn_SearchByPrefix(t *testing.T) {
 		Foo: "bar",
 	}
 	obj3 := &TestObject{
-		ID:  "my-cool-object",
+		ID:  "my-cool-second-object",
+		Foo: "baz",
+	}
+	obj4 := &TestObject{
+		ID:  "my-ordinary-fourth-object",
 		Foo: "baz",
 	}
 
@@ -180,8 +184,12 @@ func TestTxn_SearchByPrefix(t *testing.T) {
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
+	err = txn.Insert("main", obj4)
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
 
-	raw, err := txn.searchByPrefix("main", "id", "my-cool")
+	raw, err := txn.Find("main", "id", "my-cool")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}

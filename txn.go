@@ -312,7 +312,7 @@ func (txn *Txn) First(table, index string, args ...interface{}) (interface{}, er
 	}
 
 	// Handle non-unique index by using an iterator and getting the first value
-	nodes, err := txn.Find(table, index, args)
+	nodes, err := txn.Find(table, index, args...)
 	if err != nil {
 		return nil, err
 	}
