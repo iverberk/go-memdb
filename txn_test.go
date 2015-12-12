@@ -209,6 +209,15 @@ func TestTxn_Find(t *testing.T) {
 			t.Fatalf("bad: object is not expected, got: %#v", raw)
 		}
 	}
+
+	raw, err = txn.Find("main", "id", "my+")
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
+
+	if len(raw) != 0 {
+		t.Fatalf("bad: expected zero objects, got: %#v", raw)
+	}
 }
 
 func TestTxn_First_NonUnique_Multiple(t *testing.T) {
