@@ -331,7 +331,7 @@ func (txn *Txn) Find(table, index string, args ...interface{}) ([]interface{}, e
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Printf("raw: %v, string: %s, bytes: %x\n", val, val, val)
 	// Get the index itself
 	indexTxn := txn.readableIndex(table, indexSchema.Name)
 
