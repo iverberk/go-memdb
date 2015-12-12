@@ -312,7 +312,7 @@ func (txn *Txn) First(table, index string, args ...interface{}) (interface{}, er
 	}
 
 	// Handle non-unique index by using an iterator and getting the first value
-	nodes, err := txn.SearchByPrefix(table, index, args)
+	nodes, err := txn.Find(table, index, args)
 	if err != nil {
 		return nil, err
 	}
@@ -324,9 +324,8 @@ func (txn *Txn) First(table, index string, args ...interface{}) (interface{}, er
 	return nodes[0], nil
 }
 
-// First is used to return the first matching object for
-// the given constraints on the index
-func (txn *Txn) SearchByPrefix(table, index string, args ...interface{}) ([]interface{}, error) {
+// Find is used to return all objects for the given constraints on the index
+func (txn *Txn) Find(table, index string, args ...interface{}) ([]interface{}, error) {
 	// Get the index value
 	indexSchema, val, err := txn.getIndexValue(table, index, args...)
 	if err != nil {
@@ -336,10 +335,11 @@ func (txn *Txn) SearchByPrefix(table, index string, args ...interface{}) ([]inte
 	// Get the index itself
 	indexTxn := txn.readableIndex(table, indexSchema.Name)
 
-	// Handle non-unique index by using an iterator and getting the first value
+	// Handle non-unique index by using an iterator
 	iter := indexTxn.Root().Iterator()
-	iter.SearchByPrefix(val, false)
+	iter.SeekPartialPrefix(val, false)
 
+	// Find all remaining tree objects that share the common prefix.
 	var objs []interface{}
 	for {
 		_, obj, _ := iter.Next()
