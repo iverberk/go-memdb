@@ -123,7 +123,7 @@ func (u *UUIDFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 	case string:
 		if len(arg) != 36 {
 			arg = strings.Replace(arg, "-", "", -1)
-			return []byte(arg), nil
+			return hex.DecodeString(arg)
 		} else {
 			return u.parseString(arg)
 		}
